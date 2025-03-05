@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Blitz de Empurrada</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0000CD; /* MediumBlue */
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      border: 3px solid #0000CD;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+      color: #000080; /* Navy */
+      font-size: 1rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      border-color: #0000CD;
+      outline: none;
+      box-shadow: 0 0 8px rgba(0, 0, 205, 0.5);
+    }
+
+    button {
+      background-color: #0000CD;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #4169E1; /* RoyalBlue */
+      transform: scale(1.05);
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    ul li {
+      background-color: #eef2f3;
+      margin-bottom: 5px;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    .auto-field {
+      background-color: #d1e7ff; /* Azul claro */
+      color: #0000CD; /* MediumBlue */
+      font-weight: bold;
+      border: 2px solid #000080;
+    }
+
+    .section-title {
+      text-align: center;
+      margin: 20px 0;
+      color: #000080;
+      font-size: 1.2rem;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    #modalNovoSKU {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      border: 3px solid #0000CD;
+      z-index: 1000;
+    }
+
+    #modalNovoSKU h3 {
+      margin-top: 0;
+    }
+
+    #modalNovoSKU button {
+      margin-right: 10px;
+    }
+
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+  </style>
+  <script>
+    let horarioInicio = "";
+      const produtos = {
+        "347": "SUKITA PET 1L CAIXA C/12",
+        "371": "MALZBIER BRAHMA LONG NECK 355ML SIX-PACK BANDEJA C/4",
+        "503": "SUKITA PET 2L CAIXA C/6",
+        "504": "PEPSI COLA PET 2L CAIXA C/6",
+        "620": "CARACU LONG NECK 355ML SIX-PACK BANDEJA C/4",
+        "772": "PEPSI COLA MIX BAG IN BOX 18L",
+        "828": "CHOPP BRAHMA CLARO BARRIL KEG 30L",
+        "838": "CHOPP BRAHMA CLARO BARRIL KEG 50L",
+        "982": "SKOL 600ML",
+        "988": "BRAHMA CHOPP 600ML",
+        "1164": "SUKITA UVA LATA 350ML SH C/12 NPAL",
+        "1166": "SUKITA UVA PET 2L CAIXA C/6",
+        "1388": "SKOL GFA VD 1L 2,99",
+        "1695": "BRAHMA CHOPP GFA VD 1L COM TTC",
+        "1699": "STELLA ARTOIS LT 269ML CX C/8 FRIDGE PACK",
+        "1743": "ANTARCTICA PILSEN GFA VD 1L COM TTC",
+        "1745": "SKOL LT 269ML SH C15 NPAL",
+        "1898": "BRAHMA CHOPP LT 269ML SH C15 NPAL",
+        "2006": "ANTARCTICA SUBZERO 600ML",
+        "2008": "ANTARCTICA SUBZERO LATA 350ML SH C/12 NPAL",
+        "2243": "GUARANA CHP ANTARCTICA MIX BAG IN BOX 18L",
+        "2248": "SODA LIMONADA ANTARCTICA MIX BAG IN BOX 18L",
+        "2250": "GUARANA CHP ANTARCTICA DIET MIX BAG IN BOX 18L",
+        "2319": "GUARANA CHP ANTARCTICA PET 1L CAIXA C/12",
+        "2320": "SODA LIMONADA ANTARCTICA PET 1L CAIXA C/12",
+        "2349": "GUARANA CHP ANTARCTICA PET 2L CAIXA C/6",
+        "2350": "SODA LIMONADA ANTARCTICA PET 2L CAIXA C/6",
+        "2353": "GUARANA CHP ANTARCTICA DIET PET 2L CAIXA C/6",
+        "2538": "ANTARCTICA PILSEN 600ML",
+        "2546": "ORIGINAL 600ML",
+        "2548": "BUDWEISER 600ML",
+        "2585": "GUARANA CHP ANTARCTICA GFA VD 1L",
+        "3733": "BOHEMIA NOVA EMBALAGEM 600ML",
+        "4141": "PATAGONIA AMB LAG NACIONAL LT SLEEK 350ML C 8 CX CARTAO",
+        "4143": "PATAGONIA BOH PILS NACIONAL LT SLEEK 350ML C 8 CX CARTAO",
+        "4193": "PATAGONIA WEISSE NACIONAL LT SLEEK 350ML C 8 CX CARTAO",
+        "4198": "PATAGONIA IPA LT SLEEK 350ML C 8 CX CARTAO",
+        "4262": "MICHELOB ULTRA N LT SLEEK 350ML C 8 CX CARTAO",
+        "4293": "PEPSI BLACK PET 200ML SH C/12",
+        "4345": "INDAIA AGUA MINERAL S/GAS GFA PET 5L",
+        "4359": "INDAIA AGUA MINERAL C/GAS GFA PET 1,5L FD C/6",
+        "4367": "INDAIA AGUA MINERAL S/GAS GFA PET 1,5L FD C/6",
+        "4409": "PEPSI TWIST PET 2L SHRINK C/6",
+        "7325": "PEPSI COLA PET 1L CAIXA C/12",
+        "7431": "SUKITA MIX BAG IN BOX 18L",
+        "7945": "PEPSI COLA PET 2,5L CAIXA C/6",
+        "7947": "GUARANA CHP ANTARCTICA PET 2,5L CAIXA C/6",
+        "7977": "GATORADE UVA PET 500ML SIXPACK",
+        "7979": "GATORADE FRUTAS CITRICAS PET 500ML SIXPACK",
+        "7980": "GATORADE TANGERINA PET 500ML SIXPACK",
+        "7981": "GATORADE LARANJA PET 500ML SIXPACK",
+        "7982": "GATORADE LIMAO PET 500ML SIXPACK",
+        "7983": "GATORADE MORANGO-MARACUJA PET 500ML SIXPACK",
+        "7985": "GATORADE MARACUJA PET 500ML SIXPACK",
+        "8336": "ORIGINAL ONE WAY 600ML CX 12",
+        "8411": "GUARANA CHP ANTARCTICA PET 1,5 SHRINK C/6",
+        "8791": "H2OH LIMAO C/GAS PET 500ML CAIXA C/12",
+        "8793": "H2OH LIMAO C/GAS PET 1,5L CAIXA C/6",
+        "8919": "GUARANA CHP ANTARCTICA PET 600ML CX12 NPAL",
+        "9067": "ANTARCTICA PILSEN LATA 350ML SH C/12 NPAL",
+        "9068": "SKOL 350ML",
+        "9069": "BRAHMA CHOPP LATA 350ML SH C/12 NPAL",
+        "9071": "CARACU LATA 350ML SH C/12 NPAL",
+        "9072": "BOHEMIA NOVA EMBALAGEM LATA 350ML SH C/12 NPAL",
+        "9081": "MALZBIER BRAHMA LATA 350ML SH C/12 NPAL",
+        "9083": "SKOL LT 473ML SH C/12 NPAL",
+        "9084": "GUARANA CHP ANTARCTICA LATA 350ML SH C/12 NPAL",
+        "9085": "GUARANA CHP ANTARCTICA DIET LATA 350ML SH C/12 NPAL",
+        "9087": "SODA LIMONADA ANTARCTICA LATA 350ML SH C/12 NPAL",
+        "9089": "SUKITA LATA 350ML SH C/12 NPAL",
+        "9091": "TONICA ANTARCTICA LATA 350ML SH C/12 NPAL",
+        "9092": "TONICA ANTARCTICA DIET LATA 350ML SH C/12 NPAL",
+        "9093": "PEPSI TWIST LATA 350ML SH C/12 NPAL",
+        "9096": "PEPSI COLA LATA 350ML SH C/12 NPAL",
+        "9274": "PEPSI ZERO LATA 350ML SH C/12 NPAL",
+        "9276": "PEPSI ZERO PET 2L CAIXA C/6",
+        "9320": "BRAHMA CHOPP LT 473ML SH C/12 NPAL",
+        "9795": "GUARANA ANTARCTICA ZERO PET 1L CAIXA C/12",
+        "10530": "ANTARCTICA SUBZERO GFA VD 1L",
+        "10537": "BOHEMIA GFA VD 990ML",
+        "11108": "BRAHMA CHOPP LATA 550ML SHRINK C/12",
+        "11110": "SKOL LATA 550ML SHRINK C/12",
+        "11190": "LIPTON LIMAO PET 1,5 SHRINK C/6 HF",
+        "12948": "BRAHMA CHOPP ZERO LATA 350ML SH C/12 NPAL",
+        "12951": "BRAHMA CHOPP ZERO LN 355ML SIXPACK CX CART C/04",
+        "13061": "H2OH LIMONETO PET 500ML SHRINK C/12 NPAL",
+        "13065": "H2OH LIMONETO PET 1,5 SHRINK C/06 NPAL",
+        "13194": "BRAHMA CHOPP ONE WAY 300ML CX C/23",
+        "13201": "BRAHMA CHOPP GFA VD 300ML CX C/23",
+        "13205": "SKOL GFA VD 300ML CX C/23",
+        "13307": "BUDWEISER GFA VD 990ML CX C/12",
+        "13486": "FUSION PET 1L SH C/06",
+        "13566": "SKOL BEATS SENSES LT 269ML CX C/8 FRIDGE PACK",
+        "14135": "BUDWEISER LATA 473ML SIX-PACK SH C/2 NPAL",
+        "14548": "COLORADO CAUIM ONE WAY 600ML CX C-12 ARTE",
+        "14550": "COLORADO APPIA ONE WAY 600ML CX C-12 ARTE",
+        "14552": "COLORADO INDICA ONE WAY 600ML CX C-12 ARTE",
+        "14842": "PEPSI COLA LT 269ML SH C/15",
+        "14844": "GUARANA CHP ANTARCTICA LT 269ML SH C/15",
+        "15190": "PEPSI ZERO MIX BAG IN BOX 18L",
+        "16503": "BOHEMIA GFA VD 300ML CX C/23",
+        "17266": "BOHEMIA LT 473ML CX CARTAO C/12",
+        "17276": "PATAGONIA AMB LAG NACIONAL LN 355ML CX C/12",
+        "17757": "BECKS N LONG NECK 330ML SIX-PACK SHRINK C/4",
+        "17808": "BUDWEISER OW 330ML CX C/24",
+        "18152": "GUARANA CHP ANTARCTICA PET 200ML SH C/12",
+        "18266": "PEPSI COLA PET 200ML SH C/12",
+        "18267": "SODA LIMONADA ANTARCTICA PET 200ML SH C/12",
+        "18268": "SUKITA PET 200ML SH C/12",
+        "18772": "PATAGONIA AMB LAG NACIONAL ONE WAY 740ML CX6",
+        "18780": "CORONITA EXTRA N OW 210ML CX C/4 SIX PACK",
+        "18807": "STELLA ARTOIS LONG NECK 330ML SIX-PACK SHRINK C/4",
+        "18836": "CORONA EXTRA N LONG NECK 330ML CX C/24 NPAL",
+        "19166": "COLORADO LAGER ONE WAY 600ML CX C-12 ARTE",
+        "19225": "RED BULL BR LATA 250ML CX C 24 NPAL",
+        "19227": "RED BULL BR LATA 355ML FOUR PACK",
+        "19229": "RED BULL BR LATA 250ML SIX PACK NPAL",
+        "19231": "RED BULL SUGAR FREE BR LATA 250ML FOUR PACK NPAL",
+        "19321": "GUARANA ANTARCTICA ZERO PET 200ML SH C/12",
+        "19644": "SKOL PURO MALTE LT SLEEK 350ML SH C 12",
+        "19668": "ORIGINAL LATA 350ML SH C/12 NPAL",
+        "19729": "STELLA ARTOIS LT SLEEK 350ML C 8 CX CARTAO",
+        "19849": "BOHEMIA_ LT SLEEK 350ML SH C 12",
+        "20072": "BECKS N LT SLEEK 350ML C 8 CX CARTAO",
+        "20217": "ORIGINAL GFA VD 300ML CX C/23",
+        "20329": "BRAHMA DUPLO MALTE 600ML",
+        "20498": "BRAHMA DUPLO MALTE LT SLEEK 350ML SH C 12",
+        "20530": "STELLA ARTOIS 600 ML",
+        "20533": "BRAHMA DUPLO MALTE GFA VD 1L",
+        "20535": "STELLA ARTOIS ONE WAY 600ML CX C/12 NPAL",
+        "20537": "BECKS N ONE WAY 600ML CX C/12 NPAL",
+        "20549": "BRAHMA DUPLO MALTE GFA VD 300ML CX C/23",
+        "20647": "BRAHMA DUPLO MALTE LT 269ML SH C15 NPAL",
+        "20651": "CORONA EXTRA N LT SLEEK 350ML C 8 CX CARTAO",
+        "20853": "COLORADO LAGER LT SLEEK 350ML C 8 CX CARTAO",
+        "21020": "BUDWEISER LT SLEEK 350ML CX CART C 12",
+        "21119": "SKOL BEATS GT LT 269ML CX CARTAO C/8 NPAL",
+        "21441": "SUKITA LIMAO PET 2L CAIXA C/6",
+        "21526": "JOHNNIE WALKER RED LABEL GARRAFA VIDRO 1 L",
+        "21527": "TANQUERAY GIN LONDON DRY GARRAFA VIDRO 750ML",
+        "21529": "ABSOLUT ORIGINAL GARRAFA VIDRO 1 L",
+        "21530": "SMIRNOFF ORIGINAL GARRAFA VIDRO 998ML",
+        "21632": "SPATEN N LN 355ML SIXPACK SH C/4",
+        "21658": "SPATEN N LT SLEEK 350ML CX CART C 12",
+        "21666": "RED BULL TROPICAL BR LATA 250ML FOUR PACK NPAL",
+        "21668": "SPATEN N ONE WAY 600ML CX C/12 NP ARTE",
+        "21778": "JOHNNIE WALKER RED LABEL GARRAFA VIDRO 750ML",
+        "21781": "SMIRNOFF ICE GARRAFA VD 275ML CX C24",
+        "21786": "MONTILLA CARTA BRANCA GARRAFA VIDRO 1 L",
+        "21788": "BALLANTINES FINEST GARRAFA VIDRO 1 L",
+        "21789": "ORLOFF GARRAFA VIDRO 1 L",
+        "21791": "PIRASSUNUNGA 51 GARRAFA VIDRO 965ML",
+        "21792": "WHITE HORSE GARRAFA VIDRO 1 L",
+        "21886": "BEEFEATER LONDON DRY GARRAFA VIDRO 750ML",
+        "21892": "NOVECENTO VINHO ARG MALBEC GFA OW 750ML CX C/6",
+        "21894": "NOVECENTO VINHO ARG CABERNET SAUVIGNON GFA OW 750ML CX C/6",
+        "21898": "NOVECENTO ESPUMANTE ARGENTINO BRUT GFA OW 750ML CX C/6 NPAL",
+        "21900": "NOVECENTO ESPUMANTE ARGENTINO DULCE GFA OW 750ML CX C/6 NPAL",
+        "21955": "CHIVAS REGAL 12 ANOS GARRAFA VIDRO 1 L",
+        "21968": "TRIDENT HORTELA ENVELOPE 8G CX C/21",
+        "21970": "TRIDENT MENTA ENVELOPE 8G CX C/21",
+        "21973": "TRIDENT MELANCIA ENVELOPE 8G CX C/21",
+        "21974": "TRIDENT TUTTI-FRUTTI ENVELOPE 8G CX C/21",
+        "22003": "HALLS CEREJA ENVELOPE 28G CX C/21",
+        "22005": "HALLS MENTA ENVELOPE 28G CX C/21",
+        "22007": "HALLS EXTRA FORTE ENVELOPE 28G CX C/21",
+        "22009": "CHICLETE ADAMS HORTELA CAIXINHA 2,8G CX C/100",
+        "22027": "COLORADO APPIA LT SLEEK 350ML C8 CX CARTAO NPAL",
+        "22106": "MINI OREO PCT 35G CX C/10",
+        "22177": "BUDWEISER ZERO LT SLEEK 350ML C 8 CX CARTAO",
+        "22180": "BUDWEISER ZERO LONG NECK 330ML SIX-PACK SHRINK C/4",
+        "22200": "TONICA ANTARCTICA PET 1 L SH C/06",
+        "22202": "TONICA ANTARCTICA ZERO PET 1L SH C/06",
+        "22326": "BRAHMA DUPLO MALTE LT 473ML SH C/12 NPAL",
+        "22382": "PASSPORT SELECTION GARRAFA VIDRO 1 L",
+        "22562": "DOMECQ COQ. COMPOSTO GARRAFA VIDRO 1 L",
+        "23029": "JOHNNIE WALKER BLACK LABEL GARRAFA VIDRO 1 L",
+        "23055": "PIRACANJUBA UHT INTEGRAL CX 1L CX C/12",
+        "23058": "PIRACANJUBA DESNATADO CX 1L CX C/12",
+        "23064": "NINHO INTEGRAL VITAMINA CX 1L CX C/12",
+        "23186": "SPATEN N 600ML",
+        "23246": "PIRACANJUBA LEITE CONDENSADO TETRAPAK 395G CX C/27",
+        "23256": "PIRACANJUBA CREME DE LEITE TETRAPAK 200G CX C/27",
+        "23269": "SKOL BEATS GT LONG NECK 269ML SIX-PACK SH C/4",
+        "23271": "SKOL BEATS SENSES LONG NECK 269ML SIX-PACK SH C/4",
+        "23449": "MIKES HARD LEMONADE N LT 269ML SH C12 NP",
+        "23546": "INDAIA AGUA MINERAL C/GAS GFA PET 500ML PACK C/12",
+        "23552": "INDAIA AGUA MINERAL S/GAS GFA PET 500ML PACK C/12",
+        "23594": "PIRAKIDS BEBIDA LACTEA CHOCOLATE TETRA PAK 200 ML CX C/27",
+        "23608": "PIRACANJUBA LEITE EM PO INTEGRAL SACO AL. 200G FD C/50",
+        "23614": "PIRACANJUBA SEMI DESN. ZERO LACT. CX 1L CX C/12",
+        "23731": "GATORADE MELANCIA-MORANGO PET 500ML SIXPACK",
+        "24168": "MICHELOB ULTRA N LONG NECK 330ML SIX-PACK SHRINK C/4",
+        "24256": "PETROPOLIS AGUA MIN SEM GAS PET 1,5 SHRINK C/6",
+        "24306": "RED BULL MELANCIA LATA 250ML FOUR PACK NPAL",
+        "24409": "QUINTA DO MORGADO VINHO TINTO SUAVE GFA VD 750 ML",
+        "24571": "ORLOFF VODKA GFA PET 1,75L",
+        "24806": "BETANIA EDGE LEITE UHT INTEGRAL TETRA PAK 1 L CX C/12",
+        "25151": "OLD PARR WHISKY GFA VDR 1L",
+        "25160": "BLACK & WHITE WHISKY GFA VDR 1L",
+        "25174": "51 ICE BALADA GARRAFA VD 275ML CX C24",
+        "25176": "51 ICE FRUIT MIX MORANGO + LARANJA GARRAFA VD 275ML CX C24",
+        "25178": "51 ICE LIMAO GARRAFA VD 275ML CX C24",
+        "25303": "GARRAFEIRA PL. PRETO BEES 1 UN P/24 GFA 600ML",
+        "25546": "GARRAFEIRA PL. AL. LAT. AB. PRETA BEES 1 UN P/ 23 GFA 300ML",
+        "25700": "FUSION PET 2L SHRINK C/6",
+        "26462": "ORIGINAL LT 473ML CX CARTAO C/12",
+        "26607": "RED BULL PITAYA LATA 250ML FOUR PACK NPAL",
+        "26936": "YPIOCA CONTA GOTAS GOLD GARRAFA VIDRO 965ML",
+        "27001": "GORDONS GIN DRY GFA VD 750 ML",
+        "27177": "HALLS MENTOL ENVELOPE 28G CX C/21",
+        "27179": "HALLS MORANGO ENVELOPE 28G CX C/21",
+        "27382": "BETANIA LEITE CONDENSADO TETRAPAK 395G CX C/27",
+        "27384": "BETANIA CREME DE LEITE TETRAPAK 200G CX C/27",
+        "27426": "QUERO MOLHO TRAD. SACHE 300G CX 24",
+        "27567": "RESERVADO VINHO ROSE GFA VD 750 ML",
+        "27613": "CASILLERO DEL DIABLO VNH RSV CABER SAUVG GFA VD 750 ML",
+        "27622": "RESERVADO VINHO CARMENERE GFA VD 750 ML",
+        "27625": "RESERVADO VINHO SAUVIGNON BLANC GFA VD 750 ML",
+        "27635": "CASILLERO DEL DIABLO VNH RSRV CARMENERE GFA VD 750 ML",
+        "27784": "RESERVADO VINHO CABERNET SAUVIGNON GFA VD 750 ML",
+        "27825": "DOMUS CONHAQUE GARRAFA VIDRO 900ML",
+        "27866": "CORONA CERO SUNBREW N LONG NECK 330 ML SP BASKET CX C4",
+        "28137": "SKOL BEATS CAIPIRINHA LT 269ML CX CARTAO C/8 NPAL",
+        "28700": "OREO ORIGINAL BISCOITO RECHEADO PACOTE 36G CX8",
+        "29197": "TANG REFRESCO EM PO LIMAO PCT 18G DP C/18",
+        "29199": "TANG REFRESCO EM PO LARANJA PCT 18G DP C/18",
+        "29201": "TANG REFRESCO EM PO ABACAXI PCT 18G DP C/18",
+        "29207": "TANG REFRESCO EM PO MORANGO PCT 18G DP C/18",
+        "29209": "TANG REFRESCO EM PO MARACUJA PCT 18G DP C/18",
+        "29215": "TANG REFRESCO EM PO UVA PCT 18G DP C/18",
+        "29232": "51 ICE MACA VERDE GARRAFA VD 275ML CX C24",
+        "29253": "ORIGINAL GFA VD 1L",
+        "29301": "INDAIA AGUA MINERAL S/GAS COPO PLAST. 200ML CX48",
+        "29485": "SKOL BEATS CAIPIRINHA LONG NECK 269ML SIX-PACK SH C/4",
+        "29518": "JOHNNIE WALKER WHISKY BLONDE GFA VD 750 ML",
+        "29580": "STELLA ARTOIS PURE GOLD LONG NECK 330ML SP SH C/4",
+        "29623": "QUERO MILHO VERDE LT 170 G",
+        "29733": "HALLS MELANCIA ENVELOPE 28G CX C/21",
+        "29845": "PEPSI BLACK PET 1 L SH C/12",
+        "30045": "RED BULL BR LATA 473ML CX C 12",
+        "30856": "BUBBALOO BALA MORANGO DISPLAY 15G CX/12",
+        "31064": "BUDWEISER LT 269ML SH C 15",
+        "32067": "GATORADE BERRY BLUE PET 500ML SIXPACK",
+        "32122": "SMIRNOFF VODKA N21 GFA PET 1,75L",
+        "32349": "BEATS TROPICAL LT 269ML CX CARTAO C/8 NPAL",
+        "32361": "BEATS TROPICAL LONG NECK 269ML SIX-PACK SH C/4",
+        "32425": "FUSION MELANCIA LT 473ML SH C/12 NPAL",
+        "32427": "FUSION TROPICAL LT 473ML SH C/12 NPAL",
+        "32500": "STELLA ARTOIS PURE GOLD LT SLEEK 350ML C 8 CX CARTAO",
+        "32526": "PETROPOLIS AGUA MIN SEM GAS GARRAFA PET 500MLCX C12",
+        "32528": "PETROPOLIS AGUA MIN COM GAS GARRAFA PET 500MLCX C12",
+        "32644": "BUBBALOO UVA DISPLAY 5G CX/60",
+        "32646": "BUBBALOO TUTTI FRUTTI DISPLAY 5G CX/60",
+        "32854": "SMIRNOFF ICE LT 269 ML CX C/24",
+        "33152": "QUERO KETCHUP SACHE 7G CX C/144",
+        "33153": "QUERO MAIONESE SACHE 7G CX C/144",
+        "33486": "HEINZ KETCHUP SACHE 7G CX C/144",
+        "33487": "HEINZ MAIONESE SACHE 7G CX C/144",
+        "33488": "HEINZ MOSTARDA SACHE 5G CX C/144",
+        "33734": "BEATS RED MIX LT 269ML SH C/8",
+        "33738": "BEATS RED MIX LONG NECK 269ML SIX-PACK SH C/2",
+        "34296": "TRIDENT CANELA ENVELOPE 8G CX C/21",
+        "34298": "TRIDENT MORANGO ENVELOPE 8G CX C/21",
+        "34410": "HALLS UVA VERDE ENVELOPE 28G CX C/21"
+      };
+
+
+    function iniciarFormulario() {
+      const dataAtual = new Date().toISOString().slice(0, 10);
+      horarioInicio = new Date().toLocaleTimeString();
+
+      document.getElementById("data").value = dataAtual;
+      document.getElementById("hora").value = horarioInicio;
+      document.getElementById("btnIniciar").disabled = true;
+
+      alert(`Data e horário de início registrados:\nData: ${dataAtual}\nHora: ${horarioInicio}`);
+    }
+
+    function atualizarNomeProduto() {
+      const skuInserido = document.getElementById("sku").value;
+      const nomeProduto = produtos[skuInserido] || "SKU não encontrado";
+      document.getElementById("nomeProduto").innerText = nomeProduto;
+    }
+
+    function abrirModalNovoSKU() {
+      document.getElementById("modalNovoSKU").style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+    }
+
+    function fecharModalNovoSKU() {
+      document.getElementById("modalNovoSKU").style.display = "none";
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("novoSKU").value = "";
+      document.getElementById("nomeNovoSKU").value = "";
+    }
+
+    function cadastrarNovoSKU() {
+      const novoSKU = document.getElementById("novoSKU").value;
+      const nomeNovoSKU = document.getElementById("nomeNovoSKU").value;
+
+      if (!novoSKU || !nomeNovoSKU) {
+        alert("Preencha todos os campos para cadastrar o novo SKU!");
+        return;
+      }
+
+      produtos[novoSKU] = nomeNovoSKU;
+
+      fecharModalNovoSKU();
+
+      document.getElementById("sku").value = novoSKU;
+      atualizarNomeProduto();
+      alert("Novo SKU cadastrado com sucesso!");
+    }
+
+    function adicionarSKU() {
+      const skuInserido = document.getElementById("sku").value;
+      const quantidadeAferida = document.getElementById("quantidadeAferidaSKU").value;
+      const quantidadeAvariada = document.getElementById("quantidadeAvariadaSKU").value;
+
+      if (!skuInserido || !quantidadeAferida || !quantidadeAvariada) {
+        alert("Preencha todos os campos do SKU antes de adicionar!");
+        return;
+      }
+
+      const lista = document.getElementById("listaSKUs");
+      const item = document.createElement("li");
+      item.textContent = `SKU: ${skuInserido}, Quantidade Aferida: ${quantidadeAferida}, Quantidade Avariada: ${quantidadeAvariada}`;
+      lista.appendChild(item);
+
+      document.getElementById("sku").value = "";
+      document.getElementById("quantidadeAferidaSKU").value = "";
+      document.getElementById("quantidadeAvariadaSKU").value = "";
+    }
+
+    function validarFormulario(event) {
+      event.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const data = document.getElementById("data").value;
+      const hora = document.getElementById("hora").value;
+      const nfCarreta = document.getElementById("nfCarreta").value;
+      const listaSKUs = document.getElementById("listaSKUs").innerHTML;
+
+      if (!nome || !data || !hora || !nfCarreta || !listaSKUs) {
+        alert("Todos os campos obrigatórios devem ser preenchidos!");
+        return;
+      }
+
+      alert("Formulário enviado com sucesso!");
+      document.querySelector("form").reset();
+    }
+  </script>
+</head>
+<body>
+  <h1>Formulário de Blitz de Empurrada</h1>
+  <form onsubmit="validarFormulario(event)">
+    <button type="button" id="btnIniciar" onclick="iniciarFormulario()">Iniciar Formulário</button><br><br>
+
+    <label for="nome"> Nome de quem está realizando a blitz:</label>
+    <input type="text" id="nome" name="nome" required><br><br>
+
+    <label for="data"><img src="https://img.icons8.com/office/20/calendar.png" class="icon"> Data:</label>
+    <input type="date" id="data" name="data" class="auto-field" readonly><br><br>
+
+    <label for="hora"><img src="https://img.icons8.com/office/20/clock.png" class="icon"> Hora de Início:</label>
+    <input type="time" id="hora" name="hora" class="auto-field" readonly><br><br>
+
+    <label for="nfCarreta"><img src="https://img.icons8.com/office/20/truck.png" class="icon"> NF da Carreta:</label>
+    <input type="text" id="nfCarreta" name="nfCarreta" required><br><br>
+
+    <h3 class="section-title"><img src="https://img.icons8.com/office/20/beer-bottle.png" class="icon"> Adicionar SKUs:</h3>
+    <label for="sku">Código SKU:</label>
+    <input type="text" id="sku" name="sku" oninput="atualizarNomeProduto()">
+    <span id="nomeProduto"></span><br><br>
+
+    <label for="quantidadeAferidaSKU">Quantidade Aferida:</label>
+    <input type="number" id="quantidadeAferidaSKU" name="quantidadeAferidaSKU" min="0"><br><br>
+
+    <label for="quantidadeAvariadaSKU">Quantidade Avariada:</label>
+    <input type="number" id="quantidadeAvariadaSKU" name="quantidadeAvariadaSKU" min="0"><br><br>
+
+    <button type="button" onclick="adicionarSKU()">Adicionar SKU</button><br><br>
+
+    <ul id="listaSKUs"></ul>
+
+    <button type="submit">Enviar Formulário</button>
+  </form>
+
+  <div id="overlay"></div>
+  <div id="modalNovoSKU">
+    <h3>Cadastrar Novo SKU</h3>
+    <label for="novoSKU">Código do Novo SKU:</label>
+    <input type="text" id="novoSKU" name="novoSKU"><br><br>
+
+    <label for="nomeNovoSKU">Nome do Produto:</label>
+    <input type="text" id="nomeNovoSKU" name="nomeNovoSKU"><br><br>
+
+    <button type="button" onclick="cadastrarNovoSKU()">Salvar Novo SKU</button>
+    <button type="button" onclick="fecharModalNovoSKU()">Cancelar</button>
+  </div>
+
+  <button type="button" onclick="abrirModalNovoSKU()" style="margin-top: 20px;">Cadastrar Novo SKU</button>
+</body>
+</html>
